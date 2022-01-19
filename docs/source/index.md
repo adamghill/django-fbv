@@ -10,6 +10,8 @@ If you want to read a more detailed critique of class-based views, https://spook
 
 ## Installation
 
+`poetry add django-fbv` OR `pip install django-fbv`
+
 The decorators and views can be used by just importing them. The middleware [needs to be installed like typical Django middleware](middleware.md#installation).
 
 ## Prior art
@@ -24,4 +26,6 @@ self
 decorators
 views
 middleware
+GitHub <https://github.com/adamghill/django-fbv>
+Sponsor <https://github.com/sponsors/adamghill>
 ```
