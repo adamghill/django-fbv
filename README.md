@@ -15,15 +15,15 @@
 
 ### decorators
 
-- `fbv.decorators.render_html`: convenience decorator to use instead of `django.shortcut.render` with a specified template
-- `fbv.decorators.render_view`: convenience decorator to use instead of `django.shortcut.render` with a specified template and content type
+- [`fbv.decorators.render_html`](https://django-fbv.readthedocs.io/en/latest/decorators/#render-html): convenience decorator to specify the specific template that a view function should use
+- [`fbv.decorators.render_view`](https://django-fbv.readthedocs.io/en/latest/decorators/#render-view): convenience decorator to specify the specific template and content type that a view function should use
 
 ### views
 
-- `fbv.views.html_view`: directly renders a template from `urls.py`
+- [`fbv.views.html_view`](https://django-fbv.readthedocs.io/en/latest/views/#html-view): directly render a template from `urls.py`
 
 ### middleware
 
-- `fbv.middleware.RequestMethodMiddleware`: adds a boolean property to the `request` for the current request's HTTP method
+- [`fbv.middleware.RequestMethodMiddleware`](https://django-fbv.readthedocs.io/en/latest/middleware/): adds a boolean property to the `request` for the current request's HTTP method
 
 Read all of the documentation at https://django-fbv.readthedocs.io/.
