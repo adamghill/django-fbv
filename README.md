@@ -15,4 +15,4 @@ Utilities to make Django function-based views cleaner, more efficient, and bette
 
 - `fbv.middleware.RequestMethodMiddleware`: adds a boolean property to the `request` for the current request's HTTP method
 
-Complete documentation: https://django-fbv.readthedocs.org
+Complete documentation: https://django-fbv.readthedocs.io/
