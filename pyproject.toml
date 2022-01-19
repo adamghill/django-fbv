@@ -1,0 +1,85 @@
+[project]
+name = "django-fbv"
+authors = [{name = "Adam Hill", email = "adam@adamghill.com"}]
+dynamic = ["version", "description"]
+
+[tool.poetry]
+name = "django-fbv"
+version = "0.1.0"
+description = "Utilities to make function-based views cleaner, more efficient, and better tasting. "
+authors = ["adamghill <adam@adamghill.com>"]
+license = "BSD-3"
+readme = "README.md"
+repository = "https://github.com/adamghill/django-fbv/"
+homepage = "https://github.com/adamghill/django-fbv/"
+keywords = ["python", "html", "django"]
+packages = [{ include = "fbv" }]
+
+[tool.poetry.urls]
+"Funding" = "https://github.com/sponsors/adamghill"
+
+[tool.poetry.dependencies]
+python = ">3.7,<4.0"
+django = ">2.2.0"
+
+# docs
+Sphinx = { version = "^4.3.2", optional = true }
+linkify-it-py = { version = "^1.0.3", optional = true }
+myst-parser = { version = "^0.16.1", optional = true }
+furo = { version = "^2021.11.23", optional = true }
+sphinx-copybutton = { version = "^0.4.0", optional = true }
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+flake9 = "^3.8.3"
+black = "^21.12b0"
+isort = "^5.10.1"
+sphinx-autobuild = "^2021.3.14"
+mypy = "^0.930"
+coverage = {extras = ["toml"], version = "^6.2"}
+pytest-cov = "^3.0.0"
+pytest-django = "^4.5.2"
+
+[tool.poetry.extras]
+docs = ["Sphinx", "linkify-it-py", "myst-parser", "furo", "sphinx-copybutton"]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.pytest.ini_options]
+addopts = "--quiet --failed-first -p no:warnings"
+testpaths = [
+    "tests"
+]
+
+[tool.flake8]
+ignore = "E203,E266,H106,H904"
+max-line-length = 88
+
+[tool.coverage.run]
+branch = true
+parallel = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+skip_empty = true
+
+[tool.poe.tasks]
+t = { cmd = "pytest", help = "Run tests" }
+tc = { cmd = "pytest --cov=fbv", help = "Run tests with coverage" }
+c = { cmd = "coverage report", help = "Show coverage report" }
+my = { cmd = "mypy .", help = "Run mypy" }
+b = { cmd = "black . --check --quiet", help = "Run black" }
+i = { cmd = "isort . --check --quiet", help = "Run isort" }
+tm = ["b", "i", "t", "my"]
+sa = { cmd = "sphinx-autobuild -W docs/source docs/build", help = "Sphinx autobuild" }
+sb = { cmd = "sphinx-build -W docs/source docs/build", help = "Build documentation" }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
