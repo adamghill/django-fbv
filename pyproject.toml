@@ -12,6 +12,7 @@ license = "BSD-3"
 readme = "README.md"
 repository = "https://github.com/adamghill/django-fbv/"
 homepage = "https://github.com/adamghill/django-fbv/"
+documentation = "https://django-fbv.readthedocs.io/"
 keywords = ["python", "html", "django"]
 packages = [{ include = "fbv" }]
 
