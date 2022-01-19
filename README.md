@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://coltrane.readthedocs.io"><h1 align="center">django-fbv</h1></a>
+  <a href="https://django-fbv.readthedocs.io"><h1 align="center">django-fbv</h1></a>
 </p>
 <p align="center">Utilities to make Django function-based views cleaner, more efficient, and better tasting. 💥</p>
 
