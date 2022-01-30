@@ -22,6 +22,8 @@
 ### views
 
 - [`fbv.views.html_view`](https://django-fbv.readthedocs.io/en/latest/views/#html-view): directly render a template from `urls.py`
+- [`fbv.views.favicon_file`](https://django-fbv.readthedocs.io/en/latest/views/#favicon-file): serve an image file as the favicon.ico
+- [`fbv.views.favicon_emoji`](https://django-fbv.readthedocs.io/en/latest/views/#favicon-emoji): serve an emoji as the favicon.ico
 
 ### middleware
 

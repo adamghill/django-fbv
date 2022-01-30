@@ -12,7 +12,7 @@ Add `"fbv.middleware.RequestMethodMiddleware"` to the `MIDDLEWARE` list in `sett
 # settings.py
 MIDDLEWARE = [
     # other middleware
-    'fbv.middleware.RequestMethodMiddleware',
+    "fbv.middleware.RequestMethodMiddleware",
     # other middleware
 ]
 ```
@@ -30,15 +30,14 @@ Once the middleware is installed every `request` object will now have a boolean 
 - `is_connect`
 - `is_trace`
 
-**Using the `RequestMethodMiddleware` provided properties in `views.py`**
-
 ```python
+# views.py
 from fbv.decorators import render_html
 
 @render_html("sample-html-template.html")
 def sample_html_view(request):
-    if request.is_get:  # request.method == "GET"
+    if request.is_get:  # instead of `request.method == "GET"`
         return {"http_method": "GET"}
-    elif request.is_post:  # request.method == "POST"
+    elif request.is_post:  # instead of `request.method == "POST"`
         return {"http_method": "POST"}
 ```

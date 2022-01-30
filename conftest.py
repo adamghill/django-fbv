@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django import setup as django_setup
 from django.conf import settings
 
@@ -31,6 +33,7 @@ def pytest_configure():
     ]
 
     settings.configure(
+        BASE_DIR=Path("tests"),
         SECRET_KEY="this-is-a-secret",
         TEMPLATES=templates,
         ROOT_URLCONF="tests.urls",
