@@ -20,7 +20,7 @@ packages = [{ include = "fbv" }]
 "Funding" = "https://github.com/sponsors/adamghill"
 
 [tool.poetry.dependencies]
-python = ">3.7,<4.0"
+python = ">=3.7,<4.0"
 django = ">2.2.0"
 
 # docs
