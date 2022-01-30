@@ -1,6 +1,6 @@
 # Introduction
 
-`django-fbv` includes utilities to make function-based views cleaner, more efficient, and better tasting.
+`django-fbv` includes utilities to make function-based views cleaner, more efficient, and better tasting. 💥
 
 ## Why?
 

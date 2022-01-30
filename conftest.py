@@ -3,6 +3,12 @@ from django.conf import settings
 
 
 def pytest_configure():
+    databases = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+        }
+    }
+
     templates = [
         {
             "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -16,7 +22,8 @@ def pytest_configure():
     ]
 
     installed_apps = [
-        # "fbv",
+        "fbv",
+        "tests.apps.Config",
     ]
 
     middlewares = [
@@ -30,6 +37,7 @@ def pytest_configure():
         INSTALLED_APPS=installed_apps,
         UNIT_TEST=True,
         MIDDLEWARE=middlewares,
+        DATABASES=databases,
     )
 
     django_setup()

@@ -1,19 +1,8 @@
 # Decorators
 
-Decorators that can be used on top of existing view functions.
-
 ## render_html
 
 Decorator that provides a convienent way to render HTML from a function-based view.
-
-**Built-in `render` function in `views.py`**
-
-```python
-from django.shortcuts import render
-
-def sample_html_view(request):
-    return render(request, template_name="sample-html-template.html", context={"data": 123})
-```
 
 **`render_html` with `template_name` argument in `views.py`**
 
@@ -55,16 +44,7 @@ def sample_html_view(request):
 
 ## render_view
 
-Includes all the functionality of the `html_view`, but always the content type to be set.
-
-**Built-in `render` function in `views.py`**
-
-```python
-from django.shortcuts import render
-
-def sample_xml_view(request):
-    return render(request, template_name="sample-xml-template.html", context={"data": 123}, content_type="application/xml")
-```
+Includes all the functionality of the `html_view`, but allows the response content type to be set.
 
 **`render_view` in `views.py`**
 
@@ -74,4 +54,206 @@ from fbv.decorators import render_view
 @render_view("sample-xml-template.xml", content_type="application/xml")
 def sample_xml_view(request):
     return {"data": 123}
+```
+
+## render_json
+
+Decorator that provides a convienent way to return a `JSONResponse` from a function-based view. `dictionary`, Django `Model`, and Django `QuerySet` objects are all rendered automatically by `render_json`.
+
+````{note}
+By default, the rendered JSON won't have whitespaces between keys and values for the most compact representation as possible. However, you can override that functionality by passing in a `tuple` as `(item_separator, key_separator)`.
+
+**`render_json` in `views.py`**
+
+```python
+from fbv.decorators import render_json
+
+@render_json()
+def sample_json_view(request):
+    return {"data": 123, "test": 456}
+```
+
+**Default JSON response**
+
+```json
+{"data":123,"test":456}
+```
+
+**`render_json` with `separators` in `views.py`**
+
+```python
+from fbv.decorators import render_json
+
+@render_json(separators=(", ", ": "))
+def sample_json_view(request):
+    return {"data": 123, "test":456}
+```
+
+**Separators JSON response**
+
+```json
+{"data": 123, "test": 456}
+```
+
+````
+
+### dictionary
+
+**`render_json` in `views.py`**
+
+```python
+from fbv.decorators import render_json
+
+@render_json()
+def sample_json_view(request):
+    return {"data": 123}
+```
+
+**`dictionary` JSON response**
+
+```json
+{ "data": 123 }
+```
+
+### Django `Model`
+
+**`render_json` of Django `Model` in `views.py`**
+
+```python
+from django.contrib.auth.models import User
+from fbv.decorators import render_json
+
+@render_json()
+def sample_json_model_view(request):
+    user = User.objects.get(id=1)
+
+    return user
+```
+
+**Django `Model` JSON response**
+
+```json
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "username": "testuser",
+    "first_name": "Test",
+    "last_name": "User",
+    "email": "testuser@test.com"
+  }
+}
+```
+
+### Specifying model fields
+
+To only return some of the model fields, pass in a `fields` kwarg with a `tuple` of field names.
+
+**`render_json` of Django `Model` in `views.py`**
+
+```python
+from django.contrib.auth.models import User
+from fbv.decorators import render_json
+
+@render_json(fields=("username", ))
+def sample_json_model_view(request):
+    user = User.objects.get(id=1)
+
+    return user
+```
+
+**Django `Model` JSON response**
+
+```json
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "username": "testuser"
+  }
+}
+```
+
+### Django `QuerySet`
+
+**`render_json` of Django `QuerySet` in `views.py`**
+
+```python
+from django.contrib.auth.models import User
+from fbv.decorators import render_json
+
+@render_json()
+def sample_json_queryset_view(request):
+    users = User.objects.all()
+
+    return users
+```
+
+**Django `QuerySet` JSON response**
+
+```json
+{
+  "models": [
+    {
+      "model": "auth.user",
+      "pk": 1,
+      "fields": {
+        "username": "testuser1",
+        "first_name": "Test",
+        "last_name": "User",
+        "email": "testuser@test.com"
+      }
+    },
+    {
+      "model": "auth.user",
+      "pk": 2,
+      "fields": {
+        "username": "testuser2",
+        "first_name": "Test",
+        "last_name": "User",
+        "email": "testuser@test.com"
+      }
+    }
+  ]
+}
+```
+
+### Specifying QuerySet model fields
+
+To only return some of the QuerySet's model fields, pass in a `fields` kwarg with a `tuple` of field names.
+
+**`render_json` of Django `QuerySet` with fields in `views.py`**
+
+```python
+from django.contrib.auth.models import User
+from fbv.decorators import render_json
+
+@render_json(fields=("username",))
+def sample_json_queryset_view(request):
+    users = User.objects.all()
+
+    return users
+```
+
+**Django `QuerySet` with fields JSON response**
+
+```json
+{
+  "models": [
+    {
+      "model": "auth.user",
+      "pk": 1,
+      "fields": {
+        "username": "testuser1"
+      }
+    },
+    {
+      "model": "auth.user",
+      "pk": 2,
+      "fields": {
+        "username": "testuser2"
+      }
+    }
+  ]
+}
 ```

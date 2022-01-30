@@ -1,13 +1,17 @@
 # Configuration file for the Sphinx documentation builder.
 
+import toml
+
 # -- Project information
 
 project = "django-fbv"
 copyright = "2022, Adam Hill"
 author = "Adam Hill"
 
-release = "0.1.0"
-version = "0.1.0"
+pyproject = toml.load("../../pyproject.toml")
+version = pyproject["tool"]["poetry"]["version"]
+release = version
+
 
 # -- General configuration
 

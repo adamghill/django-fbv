@@ -15,6 +15,16 @@ def test_render_view_default_content_type(request):
     assert_response(response, content="asdf 123")
 
 
+def test_render_view_not_dictionary(request):
+    @render_view("test/template.html")
+    def _(*args):
+        return "test123"
+
+    response = _(request)
+
+    assert response == "test123"
+
+
 def test_render_view_custom_content_type(request):
     @render_view("test/template.html", content_type="application/json")
     def _(*args):

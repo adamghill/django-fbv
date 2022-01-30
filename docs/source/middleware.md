@@ -30,19 +30,6 @@ Once the middleware is installed every `request` object will now have a boolean 
 - `is_connect`
 - `is_trace`
 
-**Normal check of `request` HTTP method in `views.py`**
-
-```python
-from fbv.decorators import render_html
-
-@render_html("sample-html-template.html")
-def sample_html_view(request):
-    if request.method == "GET":
-        return {"http_method": "GET"}
-    elif request.method == "POST":
-        return {"http_method": "POST"}
-```
-
 **Using the `RequestMethodMiddleware` provided properties in `views.py`**
 
 ```python
@@ -50,8 +37,8 @@ from fbv.decorators import render_html
 
 @render_html("sample-html-template.html")
 def sample_html_view(request):
-    if request.is_get:
+    if request.is_get:  # request.method == "GET"
         return {"http_method": "GET"}
-    elif request.is_post:
+    elif request.is_post:  # request.method == "POST"
         return {"http_method": "POST"}
 ```

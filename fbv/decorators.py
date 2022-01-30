@@ -1,12 +1,22 @@
+import json
 from functools import wraps
 from os.path import join
+from typing import Tuple
 
+from django.core import serializers
+from django.db import models
+from django.http import JsonResponse
 from django.shortcuts import render
 
 __all__ = [
     "render_html",
     "render_view",
+    "render_json",
 ]
+
+
+DEFAULT_JSON_SEPARATORS = (", ", ": ")
+MINIFIED_JSON_SEPARATORS = (",", ":")
 
 
 def render_html(template_name: str = None):
@@ -49,6 +59,39 @@ def render_view(template_name: str = None, content_type: str = None):
                 _template_name = join(template_dir, f"{function_name}.html")
 
             return render(request, _template_name, context, content_type=content_type)
+
+        return wrapper
+
+    return renderer
+
+
+def render_json(fields: Tuple[str] = None, separators: Tuple[str] = None):
+    def renderer(function):
+        @wraps(function)
+        def wrapper(request, *args, fields=fields, separators=separators, **kwargs):
+            context = function(request, *args, **kwargs)
+
+            if isinstance(context, models.Model):
+                context = json.loads(
+                    serializers.serialize("json", [context], fields=fields)[1:-1]
+                )
+            elif isinstance(context, models.QuerySet):
+                context = json.loads(
+                    serializers.serialize("json", context, fields=fields)
+                )
+                context = {"models": context}
+            else:
+                assert (
+                    fields is None
+                ), "The `fields` kwarg should only be used when serializing Django models."
+
+            if not isinstance(context, dict):
+                return context
+
+            if separators is None:
+                separators = MINIFIED_JSON_SEPARATORS
+
+            return JsonResponse(context, json_dumps_params={"separators": separators})
 
         return wrapper
 

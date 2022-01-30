@@ -29,6 +29,7 @@ linkify-it-py = { version = "^1.0.3", optional = true }
 myst-parser = { version = "^0.16.1", optional = true }
 furo = { version = "^2021.11.23", optional = true }
 sphinx-copybutton = { version = "^0.4.0", optional = true }
+toml = { version = "*", optional = true }
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
@@ -42,7 +43,7 @@ pytest-cov = "^3.0.0"
 pytest-django = "^4.5.2"
 
 [tool.poetry.extras]
-docs = ["Sphinx", "linkify-it-py", "myst-parser", "furo", "sphinx-copybutton"]
+docs = ["Sphinx", "linkify-it-py", "myst-parser", "furo", "sphinx-copybutton", "toml"]
 
 [tool.black]
 line-length = 88
@@ -52,7 +53,7 @@ profile = "black"
 multi_line_output = 3
 
 [tool.pytest.ini_options]
-addopts = "--quiet --failed-first -p no:warnings"
+addopts = "--quiet --failed-first --reuse-db --nomigrations -p no:warnings"
 testpaths = [
     "tests"
 ]
