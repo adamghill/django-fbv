@@ -15,8 +15,9 @@
 
 ### decorators
 
-- [`fbv.decorators.render_html`](https://django-fbv.readthedocs.io/en/latest/decorators/#render-html): convenience decorator to specify the specific template that a view function should use
-- [`fbv.decorators.render_view`](https://django-fbv.readthedocs.io/en/latest/decorators/#render-view): convenience decorator to specify the specific template and content type that a view function should use
+- [`fbv.decorators.render_html`](https://django-fbv.readthedocs.io/en/latest/decorators/#render-html): decorator to specify the template that a view function response should use when rendering
+- [`fbv.decorators.render_view`](https://django-fbv.readthedocs.io/en/latest/decorators/#render-view): decorator to specify the template and content type that a view function response should use when rendering
+- [`fbv.decorators.render_json`](https://django-fbv.readthedocs.io/en/latest/decorators/#render-json): decorator to automatically render dictionaries, Django Models, or Django QuerySets as a JSON response
 
 ### views
 
