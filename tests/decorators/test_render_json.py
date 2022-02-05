@@ -124,7 +124,7 @@ def test_render_json_model_fields_with_empty_tuple(request):
     response = _(request)
 
     expected = json.dumps(
-        {"pk": 456},
+        {},
         separators=MINIFIED_JSON_SEPARATORS,
     )
 
