@@ -1,7 +1,7 @@
 import json
 from functools import partial, wraps
 from os.path import join
-from typing import Any, Tuple
+from typing import Any, Dict, Tuple
 
 from django.core import serializers
 from django.db import models
@@ -72,6 +72,25 @@ def render_view(template_name: str = None, content_type: str = None) -> Any:
     return renderer
 
 
+def _convert_serialized_model(data: Dict, fields=None) -> Dict:
+    """
+    Converts the Django model dictionary that gets serialized into something
+    more reasonable for external use.
+    """
+
+    model_data = {}
+
+    if fields is None or "pk" in fields:
+        model_data["pk"] = data["pk"]
+
+    if fields is not None and "id" in fields:
+        model_data["id"] = data["pk"]
+
+    model_data.update(data["fields"])
+
+    return model_data
+
+
 def render_json(
     func=None, *, fields: Tuple[str] = None, separators: Tuple[str] = None
 ) -> Any:
@@ -97,9 +116,20 @@ def render_json(
             context = json.loads(
                 serializers.serialize("json", [context], fields=fields)[1:-1]
             )
+
+            context = _convert_serialized_model(context, fields=fields)
         elif isinstance(context, models.QuerySet):
-            context = json.loads(serializers.serialize("json", context, fields=fields))
-            context = {"models": context}
+            try:
+                context = json.loads(
+                    serializers.serialize("json", context, fields=fields)
+                )
+
+                context = [_convert_serialized_model(c, fields=fields) for c in context]
+            except AttributeError:
+                # `AttributeError: 'dict' object has no attribute '_meta'` gets thrown
+                # when the `QuerySet` was created with `.values()` or `.values_list()`
+                # which are actually `dictionaries` or `tuples` when iterated over
+                context = [c for c in context]
         else:
             assert (
                 fields is None
@@ -111,7 +141,7 @@ def render_json(
         if separators is None:
             separators = MINIFIED_JSON_SEPARATORS
 
-        # `safe` is always False because returning a list is pretty standard at this point.
+        # `safe` is always False because returning a list should be fine with modern browsers
         return JsonResponse(
             context, json_dumps_params={"separators": separators}, safe=False
         )

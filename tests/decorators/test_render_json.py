@@ -88,11 +88,7 @@ def test_render_json_model(request):
     response = _(request)
 
     expected = json.dumps(
-        {
-            "model": "tests.fakemodel",
-            "pk": None,
-            "fields": {"name": "test123", "is_valid": False},
-        },
+        {"pk": None, "name": "test123", "is_valid": False},
         separators=MINIFIED_JSON_SEPARATORS,
     )
 
@@ -110,7 +106,61 @@ def test_render_json_model_fields(request):
     response = _(request)
 
     expected = json.dumps(
-        {"model": "tests.fakemodel", "pk": 456, "fields": {"name": "test789"}},
+        {"name": "test789"},
+        separators=MINIFIED_JSON_SEPARATORS,
+    )
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == expected
+
+
+def test_render_json_model_fields_with_empty_tuple(request):
+    fake_model = FakeModel(id=456, name="test789")
+
+    @render_json(fields=())
+    def _(*args):
+        return fake_model
+
+    response = _(request)
+
+    expected = json.dumps(
+        {"pk": 456},
+        separators=MINIFIED_JSON_SEPARATORS,
+    )
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == expected
+
+
+def test_render_json_model_fields_with_pk(request):
+    fake_model = FakeModel(id=456, name="test789")
+
+    @render_json(fields=("pk",))
+    def _(*args):
+        return fake_model
+
+    response = _(request)
+
+    expected = json.dumps(
+        {"pk": 456},
+        separators=MINIFIED_JSON_SEPARATORS,
+    )
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == expected
+
+
+def test_render_json_model_fields_with_id(request):
+    fake_model = FakeModel(id=456, name="test789")
+
+    @render_json(fields=("id",))
+    def _(*args):
+        return fake_model
+
+    response = _(request)
+
+    expected = json.dumps(
+        {"id": 456},
         separators=MINIFIED_JSON_SEPARATORS,
     )
 
@@ -131,9 +181,9 @@ def test_render_json_saved_model(request):
 
     expected = json.dumps(
         {
-            "model": "tests.fakemodel",
             "pk": fake_model.id,
-            "fields": {"name": "test123", "is_valid": False},
+            "name": "test123",
+            "is_valid": False,
         },
         separators=MINIFIED_JSON_SEPARATORS,
     )
@@ -157,20 +207,85 @@ def test_render_json_queryset(request):
     response = _(request)
 
     expected = json.dumps(
-        {
-            "models": [
-                {
-                    "model": "tests.fakemodel",
-                    "pk": fake_model_one.id,
-                    "fields": {"name": "test123", "is_valid": True},
-                },
-                {
-                    "model": "tests.fakemodel",
-                    "pk": fake_model_two.id,
-                    "fields": {"name": "test456", "is_valid": False},
-                },
-            ]
-        },
+        [
+            {"pk": fake_model_one.id, "name": "test123", "is_valid": True},
+            {"pk": fake_model_two.id, "name": "test456", "is_valid": False},
+        ],
+        separators=MINIFIED_JSON_SEPARATORS,
+    )
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == expected
+
+
+@pytest.mark.django_db
+def test_render_json_queryset_values(request):
+    fake_model_one = FakeModel(name="test123", is_valid=True)
+    fake_model_one.save()
+
+    fake_model_two = FakeModel(name="test456", is_valid=False)
+    fake_model_two.save()
+
+    @render_json()
+    def _(*args):
+        return FakeModel.objects.all().values()
+
+    response = _(request)
+
+    expected = json.dumps(
+        [
+            {"id": 1, "name": "test123", "is_valid": True},
+            {"id": 2, "name": "test456", "is_valid": False},
+        ],
+        separators=MINIFIED_JSON_SEPARATORS,
+    )
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == expected
+
+
+@pytest.mark.django_db
+def test_render_json_queryset_values_list(request):
+    fake_model_one = FakeModel(name="test123", is_valid=True)
+    fake_model_one.save()
+
+    fake_model_two = FakeModel(name="test456", is_valid=False)
+    fake_model_two.save()
+
+    @render_json()
+    def _(*args):
+        return FakeModel.objects.all().values_list()
+
+    response = _(request)
+
+    expected = json.dumps(
+        [
+            [1, "test123", True],
+            [2, "test456", False],
+        ],
+        separators=MINIFIED_JSON_SEPARATORS,
+    )
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == expected
+
+
+@pytest.mark.django_db
+def test_render_json_queryset_values_list_flat(request):
+    fake_model_one = FakeModel(name="test123", is_valid=True)
+    fake_model_one.save()
+
+    fake_model_two = FakeModel(name="test456", is_valid=False)
+    fake_model_two.save()
+
+    @render_json()
+    def _(*args):
+        return FakeModel.objects.all().values_list("id", flat=True)
+
+    response = _(request)
+
+    expected = json.dumps(
+        [1, 2],
         separators=MINIFIED_JSON_SEPARATORS,
     )
 
