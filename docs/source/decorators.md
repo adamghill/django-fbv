@@ -117,7 +117,7 @@ def sample_json_view(request):
 
 ### Django `Model`
 
-**`render_json` of Django `Model` in `views.py`**
+**`render_json` Django `Model` in `views.py`**
 
 ```python
 from django.contrib.auth.models import User
@@ -134,14 +134,11 @@ def sample_json_model_view(request):
 
 ```json
 {
-  "model": "auth.user",
   "pk": 1,
-  "fields": {
-    "username": "testuser",
-    "first_name": "Test",
-    "last_name": "User",
-    "email": "testuser@test.com"
-  }
+  "username": "testuser1",
+  "first_name": "Test 1",
+  "last_name": "User 1",
+  "email": "testuser1@test.com"
 }
 ```
 
@@ -149,7 +146,7 @@ def sample_json_model_view(request):
 
 To only return some of the model fields, pass in a `fields` kwarg with a `tuple` of field names.
 
-**`render_json` of Django `Model` in `views.py`**
+**`render_json` Django `Model` in `views.py`**
 
 ```python
 from django.contrib.auth.models import User
@@ -166,17 +163,13 @@ def sample_json_model_view(request):
 
 ```json
 {
-  "model": "auth.user",
-  "pk": 1,
-  "fields": {
-    "username": "testuser"
-  }
+  "username": "testuser"
 }
 ```
 
 ### Django `QuerySet`
 
-**`render_json` of Django `QuerySet` in `views.py`**
+**`render_json` Django `QuerySet` in `views.py`**
 
 ```python
 from django.contrib.auth.models import User
@@ -192,37 +185,29 @@ def sample_json_queryset_view(request):
 **Django `QuerySet` JSON response**
 
 ```json
-{
-  "models": [
-    {
-      "model": "auth.user",
-      "pk": 1,
-      "fields": {
-        "username": "testuser1",
-        "first_name": "Test",
-        "last_name": "User",
-        "email": "testuser@test.com"
-      }
-    },
-    {
-      "model": "auth.user",
-      "pk": 2,
-      "fields": {
-        "username": "testuser2",
-        "first_name": "Test",
-        "last_name": "User",
-        "email": "testuser@test.com"
-      }
-    }
-  ]
-}
+[
+  {
+    "pk": 1,
+    "username": "testuser1",
+    "first_name": "Test 1",
+    "last_name": "User 1",
+    "email": "testuser1@test.com"
+  },
+  {
+    "pk": 2,
+    "username": "testuser2",
+    "first_name": "Test 2",
+    "last_name": "User 2",
+    "email": "testuser2@test.com"
+  }
+]
 ```
 
 ### Specifying QuerySet model fields
 
 To only return some of the QuerySet's model fields, pass in a `fields` kwarg with a `tuple` of field names.
 
-**`render_json` of Django `QuerySet` with fields in `views.py`**
+**`render_json` Django `QuerySet` with fields in `views.py`**
 
 ```python
 from django.contrib.auth.models import User
@@ -238,22 +223,42 @@ def sample_json_queryset_view(request):
 **Django `QuerySet` with fields JSON response**
 
 ```json
-{
-  "models": [
-    {
-      "model": "auth.user",
-      "pk": 1,
-      "fields": {
-        "username": "testuser1"
-      }
-    },
-    {
-      "model": "auth.user",
-      "pk": 2,
-      "fields": {
-        "username": "testuser2"
-      }
-    }
-  ]
-}
+[
+  {
+    "username": "testuser1"
+  },
+  {
+    "username": "testuser2"
+  }
+]
+```
+
+### Using `QuerySet.values()`
+
+To only return some of the QuerySet's model fields, call `QuerySet.values()` with the field names.
+
+**`render_json` Django `QuerySet.values()` in `views.py`**
+
+```python
+from django.contrib.auth.models import User
+from fbv.decorators import render_json
+
+@render_json()
+def sample_json_queryset_view(request):
+    users = User.objects.all().values("first_name")
+
+    return users
+```
+
+**Django `QuerySet.values()` JSON response**
+
+```json
+[
+  {
+    "first_name": "Test "
+  },
+  {
+    "first_name": "Test 2"
+  }
+]
 ```
