@@ -1,7 +1,7 @@
 import json
-from functools import wraps
+from functools import partial, wraps
 from os.path import join
-from typing import Tuple
+from typing import Any, Tuple
 
 from django.core import serializers
 from django.db import models
@@ -20,26 +20,32 @@ MINIFIED_JSON_SEPARATORS = (",", ":")
 
 
 def render_html(template_name: str = None):
-    return render_view(template_name, content_type=None)
+    return render_view(template_name=template_name, content_type=None)
 
 
-def render_view(template_name: str = None, content_type: str = None):
+def render_view(template_name: str = None, content_type: str = None) -> Any:
     """
-    Decorator for Django function-based views that renders the passed-in template
+    Decorator for function-based views that renders the passed-in template
     with the returned dictionary.
 
     Template name can be decorator parameter or `TEMPLATE` key in returned
-    dictionary.  If view doesn't return dict then decorator simply returns output.
+    dictionary.
 
-    Parameters:
-     - template_name: template name to use
-     - content_type: content type to send in response headers
+    If view doesn't return a `dictionary` then the function output is returned.
+
+    Args:
+        template_name: template name to use
+        content_type: content type to send in response headers
+
+    Returns:
+        A `HttpResponse` or the output of the function if the output
+        of the function is not a `dictionary`.
     """
 
-    def renderer(function):
-        @wraps(function)
+    def renderer(func):
+        @wraps(func)
         def wrapper(request, *args, **kwargs):
-            context = function(request, *args, **kwargs)
+            context = func(request, *args, **kwargs)
 
             if not isinstance(context, dict):
                 return context
@@ -47,7 +53,8 @@ def render_view(template_name: str = None, content_type: str = None):
             _template_name = context.pop("TEMPLATE", template_name)
 
             if _template_name is None:
-                module_name = function.__module__
+                # Use a default template based on the current module
+                module_name = func.__module__
                 template_dir = module_name
 
                 module_names = module_name.split(".")
@@ -55,7 +62,7 @@ def render_view(template_name: str = None, content_type: str = None):
                 if len(module_names) > 1:
                     template_dir = join(*module_names[:-1])
 
-                function_name = function.__name__
+                function_name = func.__name__
                 _template_name = join(template_dir, f"{function_name}.html")
 
             return render(request, _template_name, context, content_type=content_type)
@@ -65,34 +72,48 @@ def render_view(template_name: str = None, content_type: str = None):
     return renderer
 
 
-def render_json(fields: Tuple[str] = None, separators: Tuple[str] = None):
-    def renderer(function):
-        @wraps(function)
-        def wrapper(request, *args, fields=fields, separators=separators, **kwargs):
-            context = function(request, *args, **kwargs)
+def render_json(
+    func=None, *, fields: Tuple[str] = None, separators: Tuple[str] = None
+) -> Any:
+    """
+    Decorator for function-based views that returns `JsonResponse` with a serialized
+    version of the returned Django `Model`, `QuerySet`, `dictionary`, or `list`.
 
-            if isinstance(context, models.Model):
-                context = json.loads(
-                    serializers.serialize("json", [context], fields=fields)[1:-1]
-                )
-            elif isinstance(context, models.QuerySet):
-                context = json.loads(
-                    serializers.serialize("json", context, fields=fields)
-                )
-                context = {"models": context}
-            else:
-                assert (
-                    fields is None
-                ), "The `fields` kwarg should only be used when serializing Django models."
+    If the function doesn't return a `dictionary` or `list`, then the function output is returned.
 
-            if not isinstance(context, dict):
-                return context
+    Args:
+        fields: Tuple of strings to return. Only available when Django `Model` or `QuerySet` is returned.
+        separators: Tuple in the form of (), which is passed to `json.dumps` in the `separators` kwarg.
+    """
 
-            if separators is None:
-                separators = MINIFIED_JSON_SEPARATORS
+    if func is None:
+        return partial(render_json, fields=fields, separators=separators)
 
-            return JsonResponse(context, json_dumps_params={"separators": separators})
+    @wraps(func)
+    def wrapper(request, *args, fields=fields, separators=separators, **kwargs):
+        context = func(request, *args, **kwargs)
 
-        return wrapper
+        if isinstance(context, models.Model):
+            context = json.loads(
+                serializers.serialize("json", [context], fields=fields)[1:-1]
+            )
+        elif isinstance(context, models.QuerySet):
+            context = json.loads(serializers.serialize("json", context, fields=fields))
+            context = {"models": context}
+        else:
+            assert (
+                fields is None
+            ), "The `fields` kwarg should only be used when serializing Django models."
 
-    return renderer
+        if not isinstance(context, dict) and not isinstance(context, list):
+            return context
+
+        if separators is None:
+            separators = MINIFIED_JSON_SEPARATORS
+
+        # `safe` is always False because returning a list is pretty standard at this point.
+        return JsonResponse(
+            context, json_dumps_params={"separators": separators}, safe=False
+        )
+
+    return wrapper

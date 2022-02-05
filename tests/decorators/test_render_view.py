@@ -5,6 +5,17 @@ from fbv.decorators import render_view
 from tests.utils import assert_response
 
 
+@pytest.mark.skip("Parens are required at least for now")
+def test_render_view_no_parens(request):
+    @render_view
+    def _(*args):
+        return {"test": 123}
+
+    response = _(request)
+
+    assert_response(response, content="asdf 123")
+
+
 def test_render_view_default_content_type(request):
     @render_view("test/template.html")
     def _(*args):

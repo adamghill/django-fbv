@@ -11,6 +11,17 @@ from fbv.decorators import (
 from tests.models import FakeModel
 
 
+def test_render_json_no_parens(request):
+    @render_json
+    def _(*args):
+        return {"test": "test123"}
+
+    response = _(request)
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == '{"test":"test123"}'
+
+
 def test_render_json_not_dictionary(request):
     @render_json()
     def _(*args):
