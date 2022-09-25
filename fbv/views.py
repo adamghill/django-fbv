@@ -1,7 +1,14 @@
-from typing import Dict
+from typing import Any, Dict
 
 from django.conf import settings
-from django.http import FileResponse, HttpRequest, HttpResponse
+from django.http import (
+    FileResponse,
+    HttpRequest,
+    HttpResponse,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+)
+from django.urls import reverse
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET
 
@@ -11,7 +18,7 @@ from .decorators import render_html
 @render_html()
 def html_view(
     request: HttpRequest, template_name: str = None, context: Dict = None
-) -> HttpResponse:
+) -> Dict[Any, Any]:
     """
     Serves an HTML template directly from urls.py.
     """
@@ -25,9 +32,25 @@ def html_view(
     return context
 
 
+def redirect_view(
+    request: HttpRequest, *args, pattern_name=None, permanent=False, **kwargs
+) -> HttpResponse:
+    """
+    Redirect to a named pattern directly from urls.py.
+
+    Based on code in https://spookylukey.github.io/django-views-the-right-way/redirects.html#additional-keyword-parameters.
+    """
+    url = reverse(pattern_name, args=args, kwargs=kwargs)
+
+    if permanent:
+        return HttpResponsePermanentRedirect(url)
+
+    return HttpResponseRedirect(url)
+
+
 @require_GET
 @cache_control(max_age=60 * 60 * 24, immutable=True, public=True)
-def favicon_file(request: HttpRequest, file_path: str) -> HttpResponse:
+def favicon_file(request: HttpRequest, file_path: str) -> FileResponse:
     """
     Serves a favicon from the file path.
 

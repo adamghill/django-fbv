@@ -13,6 +13,20 @@ urlpatterns = (
 )
 ```
 
+## `redirect_view`
+
+Redirect to a named pattern from `urls.py`, similar to using the `RedirectView`. Can also specify whether the redirect is permanent or not (i.e. a 301 or 302). Defaults to a 302.
+
+```python
+# urls.py
+from fbv.views import redirect_view
+
+urlpatterns = (
+    path("sample-html-view", redirect_view, {"pattern_name": "some-pattern-name"}),
+    path("another-html-view", redirect_view, {"pattern_name": "another-pattern-name", permanent=True}),
+)
+```
+
 ## `favicon_file`
 
 Serves an image file as `favicon.ico`.

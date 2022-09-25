@@ -21,7 +21,7 @@ def test_html_view_with_template_name(request):
     assert_response(response, content="asdf ")
 
 
-def test_html_view_with_template_name(request):
+def test_html_view_with_template_name_and_data(request):
     response = html_view(
         request, context={"TEMPLATE": "test/template.html", "test": 123}
     )
