@@ -27,6 +27,23 @@ urlpatterns = (
 )
 ```
 
+## `file`
+
+Serves a file, e.g. `robots.txt`.
+
+```python
+# urls.py
+from fbv.views import file
+
+urlpatterns = (
+    path("robots.txt", file, {"file_path": "www/robots.txt"}),
+)
+```
+
+```{note}
+`file_path` is relative to Django's `settings.BASE_DIR` path. i.e. the example above would use the file located at `/www/sample-project/www/robots.txt` if `settings.BASE_DIR` is `Path("/www/sample-project/")`.
+```
+
 ## `favicon_file`
 
 Serves an image file as `favicon.ico`.

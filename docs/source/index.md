@@ -25,6 +25,8 @@ The [decorators](decorators.md) and [views](views.md) can be used by just import
 ### views
 
 - [`fbv.views.html_view`](https://django-fbv.readthedocs.io/en/latest/views/#html-view): directly render a template from `urls.py`
+- [`fbv.views.redirect_view`](https://django-fbv.readthedocs.io/en/latest/views/#redirect-view): redirect to a pattern name from `urls.py`
+- [`fbv.views.file`](https://django-fbv.readthedocs.io/en/latest/views/#file): serve a file
 - [`fbv.views.favicon_file`](https://django-fbv.readthedocs.io/en/latest/views/#favicon-file): serve an image file as the favicon.ico
 - [`fbv.views.favicon_emoji`](https://django-fbv.readthedocs.io/en/latest/views/#favicon-emoji): serve an emoji as the favicon.ico
 
@@ -35,7 +37,7 @@ The [decorators](decorators.md) and [views](views.md) can be used by just import
 ## Prior art
 
 - The `render_view` decorator was forked from `render_to` in the delightful https://github.com/skorokithakis/django-annoying library.
-- The `favicon_file` and `favicon_emoji` code is from the superb https://adamj.eu/tech/2022/01/18/how-to-add-a-favicon-to-your-django-site/ blog post.
+- The `file`, `favicon_file` and `favicon_emoji` code is from the superb https://adamj.eu/tech/2022/01/18/how-to-add-a-favicon-to-your-django-site/ blog post.
 
 ```{toctree}
 :maxdepth: 2

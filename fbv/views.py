@@ -54,6 +54,18 @@ def favicon_file(request: HttpRequest, file_path: str) -> FileResponse:
     """
     Serves a favicon from the file path.
 
+    Helper method for `file`.
+    """
+
+    return file(request, file_path)
+
+
+@require_GET
+@cache_control(max_age=60 * 60 * 24, immutable=True, public=True)
+def file(request: HttpRequest, file_path: str) -> FileResponse:
+    """
+    Serves a file from the file path.
+
     Based on code in https://adamj.eu/tech/2022/01/18/how-to-add-a-favicon-to-your-django-site/#what-the-file-type.
     """
 
