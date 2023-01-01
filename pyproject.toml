@@ -5,7 +5,7 @@ dynamic = ["version", "description"]
 
 [tool.poetry]
 name = "django-fbv"
-version = "0.5.1"
+version = "0.6.0"
 description = "Utilities to make function-based views cleaner, more efficient, and better tasting. "
 authors = ["adamghill <adam@adamghill.com>"]
 license = "BSD-3"

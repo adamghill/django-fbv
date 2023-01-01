@@ -1,6 +1,10 @@
-# 0.5.0
+# 0.6.0
 
 - Add `fbv.views.file` method.
+
+# 0.5.0
+
+- Add `redirect_view`.
 
 # 0.4.0
 
