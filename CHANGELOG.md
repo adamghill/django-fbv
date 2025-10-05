@@ -1,3 +1,12 @@
+# 0.7.0
+
+- Default to ".html" as the template extension if an extension is not specified.
+- Add ability to call `render_view` or `render_html` decorators without parenthesis.
+
+## Breaking Changes
+
+- Require Python 3.10+.
+
 # 0.6.0
 
 - Add `fbv.views.file` method.

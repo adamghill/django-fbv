@@ -5,11 +5,11 @@ import toml
 # -- Project information
 
 project = "django-fbv"
-copyright = "2022, Adam Hill"
+copyright = "2022, Adam Hill"  # noqa: A001
 author = "Adam Hill"
 
 pyproject = toml.load("../../pyproject.toml")
-version = pyproject["tool"]["poetry"]["version"]
+version = pyproject["project"]["version"]
 release = version
 
 

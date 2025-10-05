@@ -2,13 +2,13 @@ import json
 
 import pytest
 from django.utils.timezone import now
+from tests.models import FakeModel
 
 from fbv.decorators import (
     DEFAULT_JSON_SEPARATORS,
     MINIFIED_JSON_SEPARATORS,
     render_json,
 )
-from tests.models import FakeModel
 
 
 def test_render_json_no_parens(request):
@@ -65,17 +65,21 @@ def test_render_json_dictionary_separators(request):
 
 def test_render_json_datetime(request):
     test_date_time = now()
+    dt = test_date_time.isoformat()[:-9]
+
+    expected = json.dumps(
+        {"test_date_time": f"{dt}Z"},
+        separators=MINIFIED_JSON_SEPARATORS,
+    )
 
     @render_json()
     def _(*args):
         return {"test_date_time": test_date_time}
 
     response = _(request)
+    actual = response.content.decode()
 
-    assert response.content.decode() == json.dumps(
-        {"test_date_time": test_date_time.isoformat()[:-3]},
-        separators=MINIFIED_JSON_SEPARATORS,
-    )
+    assert expected == actual
 
 
 def test_render_json_model(request):

@@ -18,7 +18,7 @@ http_methods = ["get", "post", "patch", "head", "put", "delete", "connect", "tra
 
 @pytest.mark.parametrize("http_method", http_methods)
 def test_request_method_middleware(request, response, http_method: str):
-    setattr(request, "method", http_method.upper())
+    request.method = http_method.upper()
     middleware = RequestMethodMiddleware(response)
     middleware(request)
 

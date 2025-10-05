@@ -1,5 +1,3 @@
-from typing import Any, Dict
-
 from django.conf import settings
 from django.http import (
     FileResponse,
@@ -12,13 +10,11 @@ from django.urls import reverse
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET
 
-from .decorators import render_html
+from fbv.decorators import render_html
 
 
 @render_html()
-def html_view(
-    request: HttpRequest, template_name: str = None, context: Dict = None
-) -> Dict[Any, Any]:
+def html_view(request: HttpRequest, template_name: str | None = None, context: dict | None = None) -> dict:  # noqa: ARG001
     """
     Serves an HTML template directly from urls.py.
     """
@@ -32,9 +28,7 @@ def html_view(
     return context
 
 
-def redirect_view(
-    request: HttpRequest, *args, pattern_name=None, permanent=False, **kwargs
-) -> HttpResponse:
+def redirect_view(request: HttpRequest, *args, pattern_name=None, permanent=False, **kwargs) -> HttpResponse:  # noqa: ARG001
     """
     Redirect to a named pattern directly from urls.py.
 
@@ -62,7 +56,7 @@ def favicon_file(request: HttpRequest, file_path: str) -> FileResponse:
 
 @require_GET
 @cache_control(max_age=60 * 60 * 24, immutable=True, public=True)
-def file(request: HttpRequest, file_path: str) -> FileResponse:
+def file(request: HttpRequest, file_path: str) -> FileResponse:  # noqa: ARG001
     """
     Serves a file from the file path.
 
@@ -78,7 +72,7 @@ def file(request: HttpRequest, file_path: str) -> FileResponse:
 
 @require_GET
 @cache_control(max_age=60 * 60 * 24, immutable=True, public=True)
-def favicon_emoji(request: HttpRequest, emoji: str) -> HttpResponse:
+def favicon_emoji(request: HttpRequest, emoji: str) -> HttpResponse:  # noqa: ARG001
     """
     Serves an emoji favicon.
 

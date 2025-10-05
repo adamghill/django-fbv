@@ -1,69 +1,136 @@
 [project]
 name = "django-fbv"
-authors = [{name = "Adam Hill", email = "adam@adamghill.com"}]
-dynamic = ["version", "description"]
-
-[tool.poetry]
-name = "django-fbv"
-version = "0.6.0"
+authors = [{"name" = "Adam Hill", "email" = "adam@adamghill.com"}]
+version = "0.7.0"
 description = "Utilities to make function-based views cleaner, more efficient, and better tasting. "
-authors = ["adamghill <adam@adamghill.com>"]
-license = "BSD-3"
 readme = "README.md"
-repository = "https://github.com/adamghill/django-fbv/"
-homepage = "https://github.com/adamghill/django-fbv/"
-documentation = "https://django-fbv.readthedocs.io/"
-keywords = ["python", "html", "django"]
-packages = [{ include = "fbv" }]
+requires-python = ">=3.10"
+license = "BSD-3-Clause"
+keywords = [
+  "django",
+  "web",
+  "python",
+  "django",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django",
+    "Framework :: Django :: 3",
+    "Framework :: Django :: 4",
+    "Framework :: Django :: 5",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "django > 2.2.0",
+    "typeguard >= 2",
+]
 
-[tool.poetry.urls]
-"Funding" = "https://github.com/sponsors/adamghill"
+[dependency-groups]
+dev = [
+    "pytest < 9",
+    "pytest-django >= 0",
+    "pytest-cov >= 0",
+    "mypy >= 0",
+    "sphinx-autobuild >= 2021.3.14",
+    "coverage[toml] >= 6",
+    "django-stubs >= 1",
+    "types-toml",
+]
+docs = [
+    "Sphinx >= 4.3.2",
+    "linkify-it-py >= 1.0.3",
+    "myst-parser >= 0.16.1",
+    "furo >= 2021.11.23",
+    "sphinx-copybutton >= 0.4.0",
+    "toml",
+    "attrs >= 21.4.0"
+]
 
-[tool.poetry.dependencies]
-python = ">=3.7,<4.0"
-django = ">2.2.0"
+[project.urls]
+Repository = "https://github.com/adamghill/django-fbv/"
+Homepage = "https://github.com/adamghill/django-fbv/"
+Documentation = "https://django-fbv.readthedocs.io/"
+Funding = "https://github.com/sponsors/adamghill"
 
-# docs
-Sphinx = { version = "^4.3.2", optional = true }
-linkify-it-py = { version = "^1.0.3", optional = true }
-myst-parser = { version = "^0.16.1", optional = true }
-furo = { version = "^2021.11.23", optional = true }
-sphinx-copybutton = { version = "^0.4.0", optional = true }
-toml = { version = "*", optional = true }
-attrs = { version = "^21.4.0", optional = true }
+[tool.ruff]
+src = ["src"]
+exclude = []
+target-version = "py310"
+line-length = 120
+lint.select = [
+  "A",
+  "ARG",
+  "B",
+  "C",
+  "DTZ",
+  "E",
+  "EM",
+  "F",
+  "FBT",
+  "I",
+  "ICN",
+  "ISC",
+  "N",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "Q",
+  "RUF",
+  "S",
+  "T",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+lint.ignore = [
+  # Allow non-abstract empty methods in abstract base classes
+  "B027",
+  # Allow boolean positional values in function calls, like `dict.get(... True)`
+  "FBT003",
+  # Ignore checks for possible passwords
+  "S105", "S106", "S107",
+  # Ignore complexity
+  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+  # Ignore unused variables
+  "F841",
+   # Ignore exception strings
+  "EM101", "EM102",
+]
+lint.unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
 
-[tool.poetry.dev-dependencies]
-pytest = "^6"
-flake9 = "^3"
-black = ">21"
-isort = "^5"
-sphinx-autobuild = "^2021.3.14"
-mypy = "^0"
-coverage = {extras = ["toml"], version = "^6"}
-pytest-cov = "^3"
-pytest-django = "^4"
-django-stubs = "^1"
-types-toml = "^0"
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
-[tool.poetry.extras]
-docs = ["Sphinx", "linkify-it-py", "myst-parser", "furo", "sphinx-copybutton", "toml", "attrs"]
+[tool.ruff.lint.isort]
+known-first-party = ["fbv"]
 
-[tool.black]
-line-length = 88
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
+[tool.ruff.lint.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252", "ARG001"]
 
 [tool.pytest.ini_options]
-addopts = "--quiet --failed-first --reuse-db --nomigrations -p no:warnings"
+addopts = "--quiet --failed-first -p no:warnings --reuse-db --no-migrations -m \"not slow\""
 testpaths = [
     "tests"
 ]
-
-[tool.flake8]
-ignore = "E203,E266,H106,H904"
-max-line-length = 88
+markers = [
+    "slow: marks tests as slow",
+]
 
 [tool.coverage.run]
 branch = true
@@ -76,26 +143,14 @@ skip_empty = true
 sort = "cover"
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
-
-[[tool.mypy.overrides]]
-module = ["markdown2"]
 ignore_missing_imports = true
 
-[tool.poe.tasks]
-t = { cmd = "pytest", help = "Run tests" }
-tc = { cmd = "pytest --cov=fbv", help = "Run tests with coverage" }
-c = { cmd = "coverage report", help = "Show coverage report" }
-my = { cmd = "mypy .", help = "Run mypy" }
-b = { cmd = "black . --check --quiet", help = "Run black" }
-i = { cmd = "isort . --check --quiet", help = "Run isort" }
-tm = ["b", "i", "t", "my"]
-sa = { cmd = "sphinx-autobuild -W docs/source docs/build", help = "Sphinx autobuild" }
-sb = { cmd = "sphinx-build -W docs/source docs/build", help = "Build documentation" }
-publish = { shell = "poetry publish --build -r test && poetry publish" }
+[tool.uv.build-backend]
+module-name = "fbv"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.8.12,<0.9.0"]
+build-backend = "uv_build"

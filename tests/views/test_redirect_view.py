@@ -1,7 +1,6 @@
-from unittest.mock import patch
+from tests.utils import assert_response
 
 from fbv.views import redirect_view
-from tests.utils import assert_response
 
 
 def test_redirect_view_not_permanent(request):
