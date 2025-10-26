@@ -1,7 +1,7 @@
 [project]
 name = "django-fbv"
 authors = [{"name" = "Adam Hill", "email" = "adam@adamghill.com"}]
-version = "0.7.0"
+version = "0.8.0"
 description = "Utilities to make function-based views cleaner, more efficient, and better tasting. "
 readme = "README.md"
 requires-python = ">=3.10"
