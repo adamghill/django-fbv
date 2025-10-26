@@ -21,4 +21,4 @@ build:
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv pip install --cache-dir $READTHEDOCS_VIRTUALENV_PATH/../../uv_cache .[docs]
     build:
       html:
-        - uv run sphinx-build -T -b html docs $READTHEDOCS_OUTPUT/html
+        - uv run sphinx-build -T -b html docs/source $READTHEDOCS_OUTPUT/html
