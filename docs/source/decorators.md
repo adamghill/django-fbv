@@ -4,92 +4,101 @@
 
 Decorator that provides a convienent way to render HTML from a function-based view.
 
-**`render_html` with `template_name` argument in `views.py`**
-
-```python
-from fbv.decorators import render_html
-
-@render_html("sample-html-template.html")
-def sample_html_view(request):
-    return {"data": 123}
-```
-
-**`render_html` with `TEMPLATE` dictionary key in `views.py`**
-
-```python
-from fbv.decorators import render_html
-
-@render_html()
-def sample_html_view(request):
-    return {"TEMPLATE": "sample-html-template.html", "data": 123}
-```
-
-**`render_html` with no template specified in `views.py`**
-
-This will use the current module and function name as the template name.
-
-For example, the following would look for a `views/sample_html_view.html` template.
-
-```python
-from fbv.decorators import render_html
-
-@render_html()
-def sample_html_view(request):
-    return {"data": 123}
-```
-
 ```{note}
-`render_html` is just an alias for `render_view` below that sets the content type to `text/html; charset=utf-8`.
+`render_html` is an alias for `render_view` that sets the content type to `text/html; charset=utf-8`.
+```
+
+### Decorator argument
+
+The following would look for `decorator-arg.html` as the template.
+
+```python
+# sample_app/views.py
+from fbv.decorators import render_html
+
+@render_html("decorator-arg.html")
+def sample_html_view(request):
+    return {"data": 123}
+```
+
+### Context key
+
+The following would look for `context-key.html` as the template.
+
+```python
+# sample_app/views.py
+from fbv.decorators import render_html
+
+@render_html()
+def sample_html_view(request):
+    return {"TEMPLATE": "context-key.html", "data": 123}
+```
+
+### Derived template
+
+If no template is specified, the current module and function name are used for the template.
+
+The following would look for `derived_template.html` as the template.
+
+```python
+# sample_app/views.py
+from fbv.decorators import render_html
+
+@render_html()
+def derived_template(request):
+    return {}
+```
+
+For nested view files, the following would look for `example/derived_template_2.html` as the template.
+
+```python
+# sample_app/views/example.py
+from fbv.decorators import render_html
+
+@render_html()
+def derived_template_2(request):
+    return {}
 ```
 
 ## render_view
 
-Includes all the functionality of the `html_view`, but allows the response content type to be set.
-
-**`render_view` in `views.py`**
+Similar to `render_html`, but allows the response content type to be set.
 
 ```python
+# sample_app/views.py
 from fbv.decorators import render_view
 
 @render_view("sample-xml-template.xml", content_type="application/xml")
-def sample_xml_view(request):
+def xml_view(request):
     return {"data": 123}
 ```
 
 ## render_json
 
-Decorator that provides a convienent way to return a `JSONResponse` from a function-based view. `dictionary`, Django `Model`, and Django `QuerySet` objects are all rendered automatically by `render_json`.
+Returns a `JSONResponse` from a function-based view. `dictionary`, Django `Model`, and Django `QuerySet` objects are all rendered automatically.
 
 ````{note}
-By default, the rendered JSON won't have whitespaces between keys and values for the most compact representation as possible. However, you can override that functionality by passing in a `tuple` as `(item_separator, key_separator)`.
-
-**`render_json` in `views.py`**
+By default, the rendered JSON won't have whitespaces between keys and values for the most compact representation possible. However, you can override that functionality by passing in a `tuple` as `(item_separator, key_separator)`.
 
 ```python
-from fbv.decorators import render_json
-
-@render_json()
-def sample_json_view(request):
-    return {"data": 123, "test": 456}
-```
-
-**Default JSON response**
-
-```json
-{"data":123,"test":456}
-```
-
-**`render_json` with `separators` in `views.py`**
-
-```python
+# sample_app/views.py
 from fbv.decorators import render_json
 
 @render_json(separators=(", ", ": "))
 def sample_json_view(request):
-    return {"data": 123, "test":456}
+    return {"data": 123,"test":456}
 ```
 
-**Separators JSON response**
+Or overriding just the item or key separators.
+
+```python
+# sample_app/views.py
+from fbv.decorators import render_json
+
+@render_json(item_separator=", ", key_separator=": ")
+def sample_json_view(request):
+    return {"data": 123,"test":456}
+```
 
 ```json
 {"data": 123, "test": 456}
@@ -97,40 +106,36 @@ def sample_json_view(request):
 
 ````
 
-### dictionary
-
-**`render_json` in `views.py`**
+### Dictionary
 
 ```python
+# sample_app/views.py
 from fbv.decorators import render_json
 
 @render_json()
-def sample_json_view(request):
+def dictionary_json_view(request):
     return {"data": 123}
 ```
 
-**`dictionary` JSON response**
-
 ```json
-{ "data": 123 }
+{
+  "data": 123
+}
 ```
 
-### Django `Model`
-
-**`render_json` Django `Model` in `views.py`**
+### `Model`
 
 ```python
+# sample_app/views.py
 from django.contrib.auth.models import User
 from fbv.decorators import render_json
 
 @render_json()
-def sample_json_model_view(request):
+def model_json_view(request):
     user = User.objects.get(id=1)
 
     return user
 ```
-
-**Django `Model` JSON response**
 
 ```json
 {
@@ -142,24 +147,21 @@ def sample_json_model_view(request):
 }
 ```
 
-### Specifying model fields
+### `Model` fields
 
 To only return some of the model fields, pass in a `fields` kwarg with a `tuple` of field names.
 
-**`render_json` Django `Model` in `views.py`**
-
 ```python
+# sample_app/views.py
 from django.contrib.auth.models import User
 from fbv.decorators import render_json
 
-@render_json(fields=("username", ))
-def sample_json_model_view(request):
+@render_json(fields=("username",))
+def model_fields_json_view(request):
     user = User.objects.get(id=1)
 
     return user
 ```
-
-**Django `Model` JSON response**
 
 ```json
 {
@@ -167,22 +169,19 @@ def sample_json_model_view(request):
 }
 ```
 
-### Django `QuerySet`
-
-**`render_json` Django `QuerySet` in `views.py`**
+### `QuerySet`
 
 ```python
+# sample_app/views.py
 from django.contrib.auth.models import User
 from fbv.decorators import render_json
 
 @render_json()
-def sample_json_queryset_view(request):
+def queryset_json_view(request):
     users = User.objects.all()
 
     return users
 ```
-
-**Django `QuerySet` JSON response**
 
 ```json
 [
@@ -203,13 +202,12 @@ def sample_json_queryset_view(request):
 ]
 ```
 
-### Specifying QuerySet model fields
+### `QuerySet` fields
 
 To only return some of the QuerySet's model fields, pass in a `fields` kwarg with a `tuple` of field names.
 
-**`render_json` Django `QuerySet` with fields in `views.py`**
-
 ```python
+# sample_app/views.py
 from django.contrib.auth.models import User
 from fbv.decorators import render_json
 
@@ -219,8 +217,6 @@ def sample_json_queryset_view(request):
 
     return users
 ```
-
-**Django `QuerySet` with fields JSON response**
 
 ```json
 [
@@ -233,13 +229,12 @@ def sample_json_queryset_view(request):
 ]
 ```
 
-### Using `QuerySet.values()`
+### `QuerySet` values
 
 To only return some of the QuerySet's model fields, call `QuerySet.values()` with the field names.
 
-**`render_json` Django `QuerySet.values()` in `views.py`**
-
 ```python
+# sample_app/views.py
 from django.contrib.auth.models import User
 from fbv.decorators import render_json
 
@@ -250,12 +245,10 @@ def sample_json_queryset_view(request):
     return users
 ```
 
-**Django `QuerySet.values()` JSON response**
-
 ```json
 [
   {
-    "first_name": "Test "
+    "first_name": "Test 1"
   },
   {
     "first_name": "Test 2"

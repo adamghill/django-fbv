@@ -54,9 +54,9 @@ docs = [
 ]
 
 [project.urls]
-Repository = "https://github.com/adamghill/django-fbv/"
-Homepage = "https://github.com/adamghill/django-fbv/"
-Documentation = "https://django-fbv.readthedocs.io/"
+Repository = "https://github.com/adamghill/django-fbv"
+Homepage = "https://github.com/adamghill/django-fbv"
+Documentation = "https://django-fbv.adamghill.com"
 Funding = "https://github.com/sponsors/adamghill"
 
 [tool.ruff]

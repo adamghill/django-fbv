@@ -63,6 +63,39 @@ def test_render_json_dictionary_separators(request):
     assert response.content.decode() == '{"test": 123}'
 
 
+def test_render_json_item_separator(request):
+    @render_json(item_separator=",  ")
+    def _(*args):
+        return {"test": 123, "test1": 456}
+
+    response = _(request)
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == '{"test":123,  "test1":456}'
+
+
+def test_render_json_key_separator(request):
+    @render_json(key_separator=":  ")
+    def _(*args):
+        return {"test": 123, "test1": 456}
+
+    response = _(request)
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == '{"test":  123,"test1":  456}'
+
+
+def test_render_json_item_key_separator(request):
+    @render_json(item_separator=",  ", key_separator=":  ")
+    def _(*args):
+        return {"test": 123, "test1": 456}
+
+    response = _(request)
+
+    assert response.headers["Content-Type"] == "application/json"
+    assert response.content.decode() == '{"test":  123,  "test1":  456}'
+
+
 def test_render_json_datetime(request):
     test_date_time = now()
     dt = test_date_time.isoformat()[:-9]

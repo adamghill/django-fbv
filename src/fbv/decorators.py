@@ -85,7 +85,9 @@ def render_view(template_name: str | None = None, content_type: str | None = Non
 
                 module_names = module_name.split(".")
 
-                if len(module_names) > 1:
+                if len(module_names) > 2:  # noqa: PLR2004
+                    template_dir = join(*[m for m in module_names if m != "views"])
+                elif len(module_names) > 1:
                     template_dir = join(*module_names[:-1])
 
                 function_name = func.__name__
@@ -120,7 +122,14 @@ def _convert_serialized_model(data: dict, fields: tuple[str] | None = None) -> d
     return model_data
 
 
-def render_json(func=None, *, fields: tuple[str] | None = None, separators: tuple[str] | None = None):
+def render_json(
+    func=None,
+    *,
+    fields: tuple[str] | None = None,
+    separators: tuple[str] | None = None,
+    item_separator: str | None = None,
+    key_separator: str | None = None,
+):
     """
     Decorator for function-based views that returns `JsonResponse` with a serialized
     version of the returned Django `Model`, `QuerySet`, `dictionary`, or `list`.
@@ -130,13 +139,29 @@ def render_json(func=None, *, fields: tuple[str] | None = None, separators: tupl
     Args:
         fields: Tuple of strings to return. Only available when Django `Model` or `QuerySet` is returned.
         separators: Tuple in the form of (), which is passed to `json.dumps` in the `separators` kwarg.
+        item_separator: override the default item separator passed to `json.dumps` in the `separators` kwarg.
+        key_separator: override the default key separator passed to `json.dumps` in the `separators` kwarg.
     """
 
     if func is None:
-        return partial(render_json, fields=fields, separators=separators)
+        return partial(
+            render_json,
+            fields=fields,
+            separators=separators,
+            item_separator=item_separator,
+            key_separator=key_separator,
+        )
 
     @wraps(func)
-    def wrapper(request, *args, fields=fields, separators=separators, **kwargs):
+    def wrapper(
+        request,
+        *args,
+        fields=fields,
+        separators=separators,
+        item_separator=item_separator,
+        key_separator=key_separator,
+        **kwargs,
+    ):
         context = func(request, *args, **kwargs)
 
         if isinstance(context, models.Model):
@@ -161,6 +186,12 @@ def render_json(func=None, *, fields: tuple[str] | None = None, separators: tupl
 
         if separators is None:
             separators = MINIFIED_JSON_SEPARATORS
+
+        if item_separator:
+            separators = (item_separator, separators[1])
+
+        if key_separator:
+            separators = (separators[0], key_separator)
 
         # `safe` is always False because returning a list should be fine with modern browsers
         return JsonResponse(context, json_dumps_params={"separators": separators}, safe=False)

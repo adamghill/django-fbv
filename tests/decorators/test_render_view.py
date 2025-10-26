@@ -1,6 +1,7 @@
 import pytest
 from django.template.exceptions import TemplateDoesNotExist
 from tests.utils import assert_response
+from tests.views.example import three_segment_default
 
 from fbv.decorators import render_view
 
@@ -99,3 +100,10 @@ def test_with_client(client):
     response = client.get("/test-decorator")
 
     assert_response(response, content="asdf ")
+
+
+def test_default_template_three_segment_module(request):
+    response = three_segment_default(request)
+
+    # Expects template at: tests/templates/test_render_view/three_segment_default.html
+    assert_response(response, content="drop-last 789")

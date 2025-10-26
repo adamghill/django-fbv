@@ -1,3 +1,8 @@
+# 0.8.0
+
+- Handle nested view files under a `views` folder for derived templates for `render_html`.
+- Add `item_separator` and `key_separator` kwargs to `render_json`.
+
 # 0.7.0
 
 - Default to ".html" as the template extension if an extension is not specified.
