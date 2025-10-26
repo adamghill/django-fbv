@@ -21,4 +21,4 @@ build:
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --cache-dir $READTHEDOCS_VIRTUALENV_PATH/../../uv_cache --group docs
     build:
       html:
-        - uv run sphinx-build -T -b html docs/source $READTHEDOCS_OUTPUT/html
+        - uv run sphinx-build -T -b dirhtml docs/source $READTHEDOCS_OUTPUT/html
