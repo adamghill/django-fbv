@@ -2,26 +2,51 @@
 
 `django-fbv` includes utilities to make function-based views cleaner, more efficient, and better tasting. 💥
 
-## Why?
+## Why? 🤔
 
-The Django community has two ways to build views: class-based and function-based. This library is intended to solve for some of the annoyances of function-based views.
+The Django community has two ways to write views: [class-based](https://docs.djangoproject.com/en/stable/topics/class-based-views/) and [function-based](https://docs.djangoproject.com/en/stable/topics/http/views/). One benefit of function-based views is that the input of a `HttpRequest` and the `HttpResponse` output is explicit.
 
-If you want to read a more detailed critique of class-based views, https://spookylukey.github.io/django-views-the-right-way/ is excellent.
+`django-fbv` reduces the boilerplate code required when using function-based views. It also leverages _locality of behavior_ -- the name of the template is clearly associated to the view, instead of being part of the return statement.
 
-## Installation
+Instead of this:
+
+```python
+# sample_app/views.py
+from django.shortcuts import render
+
+def regular_function_based_view(request):
+  return render(request, "template_name.html", {"data": 123})
+```
+
+You can write this:
+
+```python
+# sample_app/views.py
+from fbv.decorators import render_html
+
+@render_html("template_name.html")
+def django_fbv_view(request):
+  return {"data": 123}
+```
+
+```{note}
+If you want a more detailed critique of class-based views, I recommend reading [Django Views the Right Way](https://spookylukey.github.io/django-views-the-right-way/).
+```
+
+## Installation ⚙️
 
 `pip install django-fbv` OR `uv add django-fbv`
 
-The [decorators](decorators.md) and [views](views.md) can be used by just importing them. The middleware [needs to be installed](middleware.md#installation).
+The [decorators](decorators.md) and [views](views.md) can be used by just importing them. The middleware [needs to be installed](https://django-fbv.adamghill.com/en/latest/middleware/#installation).
 
-## Features
+## Features 🤩
 
 ### Decorators
 
 - [`fbv.decorators.render_html`](https://django-fbv.adamghill.com/en/latest/decorators/#render-html): renders a view as HTML with the specified template
 - [`fbv.decorators.render_view`](https://django-fbv.adamghill.com/en/latest/decorators/#render-view): renders a view as a content type with the specified template
 - [`fbv.decorators.render_json`](https://django-fbv.adamghill.com/en/latest/decorators/#render-json): 
-renders dictionaries, Django Models, or Django QuerySets as a JSON response
+renders dictionaries, Django `Model`, or Django `QuerySet` as a `JSON` response
 
 ### Views
 
@@ -35,10 +60,11 @@ renders dictionaries, Django Models, or Django QuerySets as a JSON response
 
 - [`fbv.middleware.RequestMethodMiddleware`](https://django-fbv.adamghill.com/en/latest/middleware/): adds a boolean property to the `request` for the current request's HTTP method
 
-## Prior art
+## Prior art 🖼️
 
-- The `render_view` decorator was forked from `render_to` in the delightful https://github.com/skorokithakis/django-annoying library.
-- The `file`, `favicon_file` and `favicon_emoji` code is from the superb https://adamj.eu/tech/2022/01/18/how-to-add-a-favicon-to-your-django-site/ blog post.
+- The `render_view` decorator was forked from `render_to` in https://github.com/skorokithakis/django-annoying.
+- The `file`, `favicon_file` and `favicon_emoji` code is from https://adamj.eu/tech/2022/01/18/how-to-add-a-favicon-to-your-django-site/.
+
 
 ```{toctree}
 :maxdepth: 2

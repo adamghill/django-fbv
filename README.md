@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://django-fbv.adamghill.com"><h1 align="center">django-fbv</h1></a>
+  <a href="https://django-fbv.adamghill.com"><h1 align="center">django-fbv 🕶️</h1></a>
 </p>
 <p align="center">Utilities to make Django function-based views cleaner, more efficient, and better tasting. 💥</p>
 
@@ -9,18 +9,51 @@
 
 📖 Complete documentation: https://django-fbv.adamghill.com
 
-📦 Package located at https://pypi.org/project/django-fbv/
+## Why? 🤔
 
-## Features
+The Django community has two ways to write views: [class-based](https://docs.djangoproject.com/en/stable/topics/class-based-views/) and [function-based](https://docs.djangoproject.com/en/stable/topics/http/views/). One benefit of function-based views is that the input of a `HttpRequest` and the `HttpResponse` output is explicit.
 
-## Features
+`django-fbv` reduces the boilerplate code required when using function-based views. It also leverages _locality of behavior_ -- the name of the template is clearly associated to the view, instead of being part of the return statement.
+
+Instead of this:
+
+```python
+# sample_app/views.py
+from django.shortcuts import render
+
+def regular_function_based_view(request):
+  return render(request, "template_name.html", {"data": 123})
+```
+
+You can write this:
+
+```python
+# sample_app/views.py
+from fbv.decorators import render_html
+
+@render_html("template_name.html")
+def django_fbv_view(request):
+  return {"data": 123}
+```
+
+```{note}
+If you want a more detailed critique of class-based views, I recommend reading [Django Views the Right Way](https://spookylukey.github.io/django-views-the-right-way/).
+```
+
+## Installation ⚙️
+
+`pip install django-fbv` OR `uv add django-fbv`
+
+The [decorators](decorators.md) and [views](views.md) can be used by just importing them. The middleware [needs to be installed](https://django-fbv.adamghill.com/en/latest/middleware/#installation).
+
+## Features 🤩
 
 ### Decorators
 
 - [`fbv.decorators.render_html`](https://django-fbv.adamghill.com/en/latest/decorators/#render-html): renders a view as HTML with the specified template
 - [`fbv.decorators.render_view`](https://django-fbv.adamghill.com/en/latest/decorators/#render-view): renders a view as a content type with the specified template
 - [`fbv.decorators.render_json`](https://django-fbv.adamghill.com/en/latest/decorators/#render-json): 
-renders dictionaries, Django Models, or Django QuerySets as a JSON response
+renders dictionaries, Django `Model`, or Django `QuerySet` as a `JSON` response
 
 ### Views
 
@@ -34,4 +67,7 @@ renders dictionaries, Django Models, or Django QuerySets as a JSON response
 
 - [`fbv.middleware.RequestMethodMiddleware`](https://django-fbv.adamghill.com/en/latest/middleware/): adds a boolean property to the `request` for the current request's HTTP method
 
-Read all of the documentation at https://django-fbv.adamghill.com/.
+## Prior art 🖼️
+
+- The `render_view` decorator was forked from `render_to` in https://github.com/skorokithakis/django-annoying.
+- The `file`, `favicon_file` and `favicon_emoji` code is from https://adamj.eu/tech/2022/01/18/how-to-add-a-favicon-to-your-django-site/.
