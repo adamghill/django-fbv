@@ -37,7 +37,7 @@ def django_fbv_view(request):
 ```
 
 ```{note}
-If you want a more detailed critique of class-based views, I recommend reading [Django Views the Right Way](https://spookylukey.github.io/django-views-the-right-way/).
+If you want a more detailed critique of class-based views, I recommend reading https://spookylukey.github.io/django-views-the-right-way/.
 ```
 
 ## Installation ⚙️
