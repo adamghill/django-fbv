@@ -11,7 +11,7 @@
 
 ## Why? 🤔
 
-The Django community has two ways to write views: [class-based](https://docs.djangoproject.com/en/stable/topics/class-based-views/) and [function-based](https://docs.djangoproject.com/en/stable/topics/http/views/). One benefit of function-based views is that the input of a `HttpRequest` and the `HttpResponse` output is explicit.
+The Django community has two ways to write views: [class-based](https://docs.djangoproject.com/en/stable/topics/class-based-views/) and [function-based](https://docs.djangoproject.com/en/stable/topics/http/views/). One benefit of function-based views is that the [`HttpRequest`](https://docs.djangoproject.com/en/stable/ref/request-response/#httprequest-objects) input and the [`HttpResponse`](https://docs.djangoproject.com/en/stable/ref/request-response/#httpresponse-objects) output is explicit, instead of being hidden within a hierarchy of classes and mixins.
 
 `django-fbv` reduces the boilerplate code required when using function-based views. It also leverages _locality of behavior_ -- the name of the template is clearly associated to the view, instead of being part of the return statement.
 
